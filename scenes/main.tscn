@@ -1,0 +1,71 @@
+[gd_scene load_steps=9 format=3 uid="uid://uxafy5ll8t8h"]
+
+[ext_resource type="Texture2D" uid="uid://lj5wk1xjwc8j" path="res://assets/png/bg.png" id="1_e1qet"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_x00px"]
+[ext_resource type="PackedScene" uid="uid://clsekqm24mh1d" path="res://scenes/axolotl.tscn" id="2_1bk05"]
+[ext_resource type="Texture2D" uid="uid://cpdj0d0v3spgn" path="res://assets/png/bg_night.png" id="3_btpgl"]
+[ext_resource type="Texture2D" uid="uid://btdpu1tmqvr0b" path="res://assets/png/day.png" id="4_5f71x"]
+[ext_resource type="Texture2D" uid="uid://kqxbc21varor" path="res://assets/png/paw.png" id="6_26mo0"]
+[ext_resource type="PackedScene" uid="uid://bxew4y7r7apim" path="res://scenes/particles.tscn" id="7_127h8"]
+[ext_resource type="PackedScene" uid="uid://pkdejmfe81j0" path="res://scenes/cursors.tscn" id="8_vxqe0"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_x00px")
+
+[node name="BackgroundDay" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_e1qet")
+
+[node name="TransitionOverlay" type="ColorRect" parent="."]
+visible = false
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0, 0, 0, 1)
+
+[node name="BackgroundNight" type="TextureRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("3_btpgl")
+
+[node name="Axolotl" parent="." instance=ExtResource("2_1bk05")]
+position = Vector2(960, 540)
+scale = Vector2(0.6, 0.6)
+
+[node name="Ui" type="CanvasLayer" parent="."]
+
+[node name="DayNightBtn" type="TextureButton" parent="Ui"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = -200.0
+offset_right = 230.0
+offset_bottom = -36.0
+grow_vertical = 0
+texture_normal = ExtResource("4_5f71x")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="PawBtn" type="TextureButton" parent="Ui"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 272.0
+offset_top = -200.0
+offset_right = 438.0
+offset_bottom = -36.0
+grow_vertical = 0
+texture_normal = ExtResource("6_26mo0")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="particles" parent="." instance=ExtResource("7_127h8")]
+position = Vector2(960, 456)
+
+[node name="cursors" parent="." instance=ExtResource("8_vxqe0")]

@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://clsekqm24mh1d"]
+
+[ext_resource type="Texture2D" uid="uid://criysfk2lyyup" path="res://assets/png/sprite.png" id="1_5o84x"]
+[ext_resource type="Script" path="res://scripts/axolotl.gd" id="1_xrcly"]
+[ext_resource type="Texture2D" uid="uid://dqjflc8hccijn" path="res://assets/png/night_sprite.png" id="3_abwva"]
+
+[node name="Axolotl" type="Node2D"]
+script = ExtResource("1_xrcly")
+
+[node name="SpriteDay" type="Sprite2D" parent="."]
+position = Vector2(2.28882e-05, 0)
+scale = Vector2(0.811069, 0.811069)
+texture = ExtResource("1_5o84x")
+
+[node name="SpriteNight" type="Sprite2D" parent="."]
+scale = Vector2(0.811, 0.811)
+texture = ExtResource("3_abwva")
+
+[node name="OutlinePoly" type="Polygon2D" parent="."]
+visible = false
+polygon = PackedVector2Array(28, -513, 24, -535, 33, -554, 57, -567, 77, -574, 87, -558, 95, -539, 93, -515, 84, -504, 102, -501, 126, -488, 145, -475, 156, -457, 168, -461, 185, -462, 205, -458, 218, -451, 254, -437, 342, -440, 359, -429, 326, -360, 298, -347, 361, -330, 355, -308, 299, -276, 256, -282, 267, -234, 248, -192, 216, -183, 172, -236, 118, -262, 91, -271, 58, -251, 89, -232, 131, -184, 201, -95, 210, -61, 166, -38, 116, -65, 98, -100, 122, -42, 139, -8, 165, 18, 178, 53, 178, 98, 154, 101, 167, 129, 169, 156, 156, 207, 141, 233, 174, 244, 213, 287, 225, 338, 202, 371, 171, 376, 163, 433, 132, 479, 107, 491, 65, 536, 24, 541, -10, 553, -44, 530, -94, 511, -115, 476, -145, 436, -168, 388, -214, 351, -231, 297, -130, 215, -165, 153, -154, 97, -182, 51, -99, -68, -153, -40, -199, -58, -207, -78, -177, -132, -82, -235, -57, -246, -94, -270, -152, -248, -194, -192, -237, -181, -262, -207, -269, -261, -309, -279, -358, -307, -353, -346, -311, -355, -351, -393, -354, -450, -335, -465, -302, -447, -229, -463, -188, -473, -153, -466, -97, -513, -48, -526, 4, -532)
