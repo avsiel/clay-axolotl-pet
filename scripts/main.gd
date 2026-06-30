@@ -26,44 +26,43 @@ var pet_intensity: float = 0.0
 var intensity_decay: float = 2.0
 var intensity_buildup: float = 0.15
 
-# ====== ФРАЗЫ ПРИ ГЛАЖКЕ (неповторяющиеся) ======
+# ====== PETTING PHRASES (non-repeating) ======
 var available_phrase_indices: Array[int] = []
 var all_phrases: Array[String] = [
-	"М-м-м, приятно!",
-	"Ещё погладь, пожалуйста!",
-	"Твоя лапка такая тёплая!",
-	"Я таю от нежности!",
-	"Это лучший массаж!",
-	"Мурлычу... булькаю...",
-	"Не останавливайся!",
-	"Я счастливый пластилин!",
-	"Ты меня балуешь!",
-	"Люблю, когда меня гладят!"
+	"Mmm, that feels nice!",
+	"Pet me more, please!",
+	"Your paw is so warm!",
+	"I'm melting with tenderness!",
+	"This is the best massage!",
+	"Purring... bubbling...",
+	"Don't stop!",
+	"I'm a happy little blob of clay!",
+	"You're spoiling me!",
+	"I love being petted!"
 ]
-
-# ====== СПЕЦИАЛЬНЫЕ ФРАЗЫ (неповторяющиеся) ======
+# ====== SPECIAL PHRASES (non-repeating) ======
 var available_special_indices: Array[int] = []
 var special_phrases: Array[String] = [
-	"Привет, хозяин! Я соскучился!",
-	"В воде сегодня так уютно...",
-	"Знаешь секрет? Жабры — это антенны для милоты!",
-	"Я нашёл блестящий камешек! Держи!",
-	"Буль-буль! Это значит 'я тебя люблю'!",
-	"Хозяин, а можно ещё креветок?",
-	"Я тут подумал... ты самый лучший!",
-	"Видел рыбку? Она мне подмигнула!",
-	"Мои жабры шевелятся от счастья!",
-	"Пластилиновые объятия тебе!",
-	"Я нарисовал пузырьками сердечко!",
-	"Ты пришёл! Я так рад!",
-	"Вода тёплая, как твоя улыбка!",
-	"Я спрятал сокровище под камнем!",
-	"Булькаю мелодию для тебя!",
-	"Хозяин, обними меня лапкой!",
-	"Я аксолотль, я мокрый и счастливый!",
-	"Сегодня отличный день для плавания!",
-	"Ты заметил, как я красиво поплыл?",
-	"Пузыри, пузыри, везде пузыри!"
+	"Hi, owner! I missed you!",
+	"The water feels so cozy today...",
+	"Want to know a secret? Gills are antennas for cuteness!",
+	"I found a shiny pebble! Here, take it!",
+	"Blub blub! That means 'I love you'!",
+	"Owner, can I have some more shrimp?",
+	"I was just thinking... you're the best!",
+	"Did you see that fish? It winked at me!",
+	"My gills are wiggling with happiness!",
+	"Sending you clay-soft hugs!",
+	"I drew a heart out of bubbles!",
+	"You're here! I'm so happy!",
+	"The water's warm, just like your smile!",
+	"I hid a treasure under a rock!",
+	"Bubbling out a little tune for you!",
+	"Owner, give me a paw-hug!",
+	"I'm an axolotl, wet and happy!",
+	"Today's a great day for swimming!",
+	"Did you notice how nicely I swam?",
+	"Bubbles, bubbles, bubbles everywhere!"
 ]
 
 var axolotl_original_scale: Vector2 = Vector2.ONE
