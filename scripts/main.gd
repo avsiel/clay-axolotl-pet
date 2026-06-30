@@ -5,9 +5,11 @@ extends Node2D
 @onready var axolotl: Node2D = $Axolotl
 @onready var day_night_btn: TextureButton = $Ui/DayNightBtn
 @onready var paw_btn: TextureButton = $Ui/PawBtn
-@onready var cursors: Node2D = $cursors
+@onready var chat_btn: TextureButton = $Ui/ChatBtn
+@onready var cursors: Control = $CursorLayer/cursors  # ← ИСПРАВЛЕННЫЙ ПУТЬ
 @onready var particles: Node2D = $particles
 @onready var outline_poly: Polygon2D = $Axolotl/OutlinePoly
+@onready var bubble: Control = $bubble
 
 var is_night: bool = false
 var is_paw_mode: bool = false
@@ -20,9 +22,51 @@ var last_pet_speech_time: float = 0.0
 # ====== СИСТЕМА ИНТЕНСИВНОСТИ ГЛАЖКИ ======
 var last_mouse_pos: Vector2 = Vector2.ZERO
 var mouse_velocity: Vector2 = Vector2.ZERO
-var pet_intensity: float = 0.0  # 0.0 - 1.0+, накапливается при быстром движении
-var intensity_decay: float = 2.0  # Насколько быстро падает интенсивность
-var intensity_buildup: float = 0.15  # Насколько быстро растёт при движении
+var pet_intensity: float = 0.0
+var intensity_decay: float = 2.0
+var intensity_buildup: float = 0.15
+
+# ====== ФРАЗЫ ПРИ ГЛАЖКЕ (неповторяющиеся) ======
+var available_phrase_indices: Array[int] = []
+var all_phrases: Array[String] = [
+	"М-м-м, приятно!",
+	"Ещё погладь, пожалуйста!",
+	"Твоя лапка такая тёплая!",
+	"Я таю от нежности!",
+	"Это лучший массаж!",
+	"Мурлычу... булькаю...",
+	"Не останавливайся!",
+	"Я счастливый пластилин!",
+	"Ты меня балуешь!",
+	"Люблю, когда меня гладят!"
+]
+
+# ====== СПЕЦИАЛЬНЫЕ ФРАЗЫ (неповторяющиеся) ======
+var available_special_indices: Array[int] = []
+var special_phrases: Array[String] = [
+	"Привет, хозяин! Я соскучился!",
+	"В воде сегодня так уютно...",
+	"Знаешь секрет? Жабры — это антенны для милоты!",
+	"Я нашёл блестящий камешек! Держи!",
+	"Буль-буль! Это значит 'я тебя люблю'!",
+	"Хозяин, а можно ещё креветок?",
+	"Я тут подумал... ты самый лучший!",
+	"Видел рыбку? Она мне подмигнула!",
+	"Мои жабры шевелятся от счастья!",
+	"Пластилиновые объятия тебе!",
+	"Я нарисовал пузырьками сердечко!",
+	"Ты пришёл! Я так рад!",
+	"Вода тёплая, как твоя улыбка!",
+	"Я спрятал сокровище под камнем!",
+	"Булькаю мелодию для тебя!",
+	"Хозяин, обними меня лапкой!",
+	"Я аксолотль, я мокрый и счастливый!",
+	"Сегодня отличный день для плавания!",
+	"Ты заметил, как я красиво поплыл?",
+	"Пузыри, пузыри, везде пузыри!"
+]
+
+var axolotl_original_scale: Vector2 = Vector2.ONE
 
 func _ready():
 	bg_day.texture = load("res://assets/png/bg.png")
@@ -34,26 +78,29 @@ func _ready():
 		day_night_btn.pressed.connect(_on_day_night_pressed)
 	if paw_btn:
 		paw_btn.pressed.connect(_on_paw_pressed)
+	if chat_btn:
+		chat_btn.pressed.connect(_on_chat_pressed)
 	
 	last_mouse_pos = get_global_mouse_position()
+	
+	_refill_phrase_indices()
+	_refill_special_indices()
+	
+	axolotl_original_scale = axolotl.scale
 
 func _process(delta):
 	if is_paw_mode:
 		cursors.follow_mouse("paw")
 	
-	# Отслеживаем скорость движения мыши
 	var current_mouse = get_global_mouse_position()
 	mouse_velocity = (current_mouse - last_mouse_pos) / delta
 	last_mouse_pos = current_mouse
 	
-	# Интенсивность падает со временем
 	pet_intensity = maxf(0.0, pet_intensity - intensity_decay * delta)
 	
-	# Если гладим (зажата ЛКМ и мышь над аксолотлем) — накапливаем интенсивность
 	if is_paw_mode and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		var axolotl_rect = axolotl.get_global_rect()
 		if axolotl_rect.has_point(current_mouse):
-			# Чем резче движение, тем быстрее растёт интенсивность
 			var speed = mouse_velocity.length()
 			var boost = clampf(speed / 500.0, 0.0, 1.0) * intensity_buildup
 			pet_intensity = clampf(pet_intensity + boost, 0.0, 2.0)
@@ -69,7 +116,7 @@ func _input(event):
 			else:
 				axolotl.set_sprite("normal")
 				axolotl.stop_wobble()
-				pet_intensity = 0.0  # Сброс при отпускании
+				pet_intensity = 0.0
 	
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		_check_petting()
@@ -112,6 +159,26 @@ func _on_paw_pressed():
 		axolotl.set_sprite("normal")
 		axolotl.stop_wobble()
 
+func _on_chat_pressed():
+	_play_speech_animation()
+	_say_special_phrase()
+
+func _play_speech_animation():
+	if axolotl.has_meta("speech_tween"):
+		var old_tween = axolotl.get_meta("speech_tween")
+		if old_tween and old_tween.is_valid():
+			old_tween.kill()
+	
+	axolotl.scale = axolotl_original_scale
+	
+	var tween = create_tween()
+	axolotl.set_meta("speech_tween", tween)
+	
+	tween.tween_property(axolotl, "scale", axolotl_original_scale * Vector2(1.0, 1.05), 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(axolotl, "scale", axolotl_original_scale, 0.1).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	
+	await tween.finished
+
 func _check_petting():
 	var axolotl_rect = axolotl.get_global_rect()
 	var mouse_pos = get_global_mouse_position()
@@ -127,5 +194,38 @@ func _handle_petting():
 	axolotl.wobble()
 	pet_count += 1
 	
+	var now_ms = Time.get_unix_time_from_system() * 1000
+	if now_ms - last_pet_speech_time > 8000 and randf() < 0.03:
+		last_pet_speech_time = now_ms
+		_say_pet_phrase()
+	
 	if particles and outline_poly:
 		particles.spawn_hearts_inside(outline_poly, pet_intensity)
+
+func _refill_phrase_indices():
+	available_phrase_indices.clear()
+	for i in range(all_phrases.size()):
+		available_phrase_indices.append(i)
+	available_phrase_indices.shuffle()
+
+func _say_pet_phrase():
+	if available_phrase_indices.is_empty():
+		_refill_phrase_indices()
+	
+	var phrase_index = available_phrase_indices.pop_back()
+	var phrase = all_phrases[phrase_index]
+	bubble.show_text(phrase)
+
+func _refill_special_indices():
+	available_special_indices.clear()
+	for i in range(special_phrases.size()):
+		available_special_indices.append(i)
+	available_special_indices.shuffle()
+
+func _say_special_phrase():
+	if available_special_indices.is_empty():
+		_refill_special_indices()
+	
+	var phrase_index = available_special_indices.pop_back()
+	var phrase = special_phrases[phrase_index]
+	bubble.show_text(phrase)

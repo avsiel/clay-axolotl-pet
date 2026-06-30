@@ -1,4 +1,4 @@
-extends Node2D
+extends Control  # ← БЫЛО Node2D, СТАЛО Control
 
 @onready var paw_cursor: Sprite2D = $PawCursor
 @onready var net_cursor: Sprite2D = $NetCursor
@@ -6,8 +6,10 @@ extends Node2D
 @onready var hvat_cursor: Sprite2D = $HvatCursor
 
 func _ready():
-	# Все курсоры скрыты при старте
 	hide_all()
+	# Для Control z_index работает иначе
+	z_index = 100
+	z_as_relative = false
 
 func hide_all():
 	if paw_cursor: paw_cursor.visible = false
@@ -40,4 +42,5 @@ func follow_mouse(cursor_name: String):
 			cursor = hvat_cursor
 	
 	if cursor:
-		cursor.global_position = get_global_mouse_position()
+		# Для Control используем position вместо global_position
+		cursor.position = get_local_mouse_position()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://uxafy5ll8t8h"]
+[gd_scene load_steps=11 format=3 uid="uid://uxafy5ll8t8h"]
 
 [ext_resource type="Texture2D" uid="uid://lj5wk1xjwc8j" path="res://assets/png/bg.png" id="1_e1qet"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_x00px"]
@@ -7,7 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://btdpu1tmqvr0b" path="res://assets/png/day.png" id="4_5f71x"]
 [ext_resource type="Texture2D" uid="uid://kqxbc21varor" path="res://assets/png/paw.png" id="6_26mo0"]
 [ext_resource type="PackedScene" uid="uid://bxew4y7r7apim" path="res://scenes/particles.tscn" id="7_127h8"]
+[ext_resource type="Texture2D" uid="uid://dl5lxnxunjjgo" path="res://assets/png/chat.png" id="7_k2q7y"]
 [ext_resource type="PackedScene" uid="uid://pkdejmfe81j0" path="res://scenes/cursors.tscn" id="8_vxqe0"]
+[ext_resource type="PackedScene" uid="uid://ckypbonm7k3oq" path="res://scenes/bubble.tscn" id="9_ji6io"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x00px")
@@ -65,7 +67,29 @@ texture_normal = ExtResource("6_26mo0")
 ignore_texture_size = true
 stretch_mode = 0
 
+[node name="ChatBtn" type="TextureButton" parent="Ui"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 480.0
+offset_top = -195.0
+offset_right = 646.0
+offset_bottom = -31.0
+grow_vertical = 0
+texture_normal = ExtResource("7_k2q7y")
+ignore_texture_size = true
+stretch_mode = 0
+
 [node name="particles" parent="." instance=ExtResource("7_127h8")]
 position = Vector2(960, 456)
 
-[node name="cursors" parent="." instance=ExtResource("8_vxqe0")]
+[node name="bubble" parent="." instance=ExtResource("9_ji6io")]
+offset_left = 1144.0
+offset_top = 352.0
+offset_right = 1320.0
+offset_bottom = 480.0
+
+[node name="CursorLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="cursors" parent="CursorLayer" instance=ExtResource("8_vxqe0")]
